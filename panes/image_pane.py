@@ -1,10 +1,11 @@
 import os.path
 import tkinter as tk
 from PIL import ImageTk, Image
-from os import path
+import os
 
 DISPLAY_IMAGE_WIDTH = 640
 DISPLAY_IMAGE_HEIGHT = 480
+WORKING_DIR = os.getcwd()
 
 class ImagePane(tk.Frame):
 
@@ -57,18 +58,18 @@ class ImagePane(tk.Frame):
         # handle case 1
         if not image_path:
             self.image_label_variable.set('no image folder currently loaded')
-            self.image_path = "images/load_an_image.png"
+            self.image_path = os.path.join(WORKING_DIR,"panes/images/load_an_image.png")
         else:
             # handle case 2
             if not os.path.exists(image_path):
                 self.image_label_variable.set(f"path: {image_path} is a bad path, try something else")
-                self.image_path = "images/bad_path.png"
+                self.image_path = os.path.join(WORKING_DIR,"panes/images/bad_path.png")
             else:
                 # handle case 3
                 if not image_path.lower().endswith(('.png', '.jpg', '.jpeg')):
                     self.image_label_variable.set(
                         f"can only load .png, .jpeg, or .jpg files, not .{image_path.split('.')[-1]}")
-                    self.image_path = "images/wrong_format.png"
+                    self.image_path = os.path.join(WORKING_DIR, "panes/images/wrong_format.png")
                 else:
                     # otherwise case 4
                     self.image_path = image_path
