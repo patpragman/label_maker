@@ -7,6 +7,7 @@ DISPLAY_IMAGE_WIDTH = 640
 DISPLAY_IMAGE_HEIGHT = 480
 WORKING_DIR = os.getcwd()
 
+
 class ImagePane(tk.Frame):
 
     def __init__(self, parent,

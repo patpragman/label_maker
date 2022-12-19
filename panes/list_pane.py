@@ -16,11 +16,13 @@ class ListPane(tk.Frame):
                  score_paths=None,
                  # the lambda function in here just returns the selected item by default, change this to
                  # something you can use
-                 click_select_callback=lambda _: print(f'Selected {_.widget.get(_.widget.curselection()[0])}')):
+                 click_select_callback=lambda _: print(f'Selected {_.widget.get(_.widget.curselection()[0])}'),
+                 choose_folder_callback=lambda : print("choose folder button pressed")):
         super().__init__(parent)
 
         # click select callback
         self.click_select_callback = click_select_callback
+        self.choose_folder_callback = choose_folder_callback
 
         # frame to hold all the widgets
         self._frame = tk.Frame(parent)
@@ -32,13 +34,13 @@ class ListPane(tk.Frame):
 
         # list box configuration
         self._list_box_frame = tk.Frame()
-        self.list_box = tk.Listbox(self._frame, height=25)
+        self.list_box = tk.Listbox(self._frame, height=24)
         self.list_box.bind("<<ListboxSelect>>", self.click_select_callback)
 
-
-
         # select folders, or filters
-        self.select_folder_button = tk.Button(self._frame, text="Select Folder")
+        self.select_folder_button = tk.Button(self._frame,
+                                              text="Select Folder",
+                                              command=self.choose_folder_callback)
         self.select_filter_label = tk.Label(self._frame,
                                             text="Score Filter:")
         self.selected_filter = tk.StringVar()
