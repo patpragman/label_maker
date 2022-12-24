@@ -57,11 +57,11 @@ class ScoredImage:
     """
     using properties because I may want to add functionality here later
     """
-    @property.getter
+    @property
     def score(self):
         return self._score
 
-    @property.setter
+    @score.setter
     def score(self, value):
         if value not in ALLOWABLE_SCORES:
             msg = """you're trying to set the value of an
