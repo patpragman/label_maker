@@ -69,7 +69,8 @@ ScoreImage object to something other than one of the
 allowable scores - that is something other than -1, 0, 2, or 3.
 No other scores are allowable."""
             raise Exception(msg)
-
+        else:
+            self._score = value
 
 
     def __repr__(self):
