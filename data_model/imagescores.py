@@ -40,6 +40,9 @@ class Folder:
     def __repr__(self):
         return str(self.images)
 
+    def __str__(self):
+        return self.path
+
     def __iter__(self):
         # iterator to make the class able to be able to be used in loops etc.
         i = 0
