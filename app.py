@@ -32,6 +32,7 @@ class Application:
             with open(self.save_state_file, "r") as save_state_file:
                 last_directory_worked_on = load(save_state_file)
             self.current_folder = Folder(last_directory_worked_on)
+
         else:
             self.current_folder = Folder(getcwd())
             with open(self.save_state_file, "w") as save_state_file:
@@ -48,7 +49,9 @@ class Application:
         self.image_pane = ImagePane(self.root)
         self.control_pane = ControlPane(self.root)
         self.list_pane = ListPane(self.root,
-                                  choose_folder_callback=self._choose_folder)
+                                  score_paths=[(image.score, image.path) for image in self.current_folder],
+                                  choose_folder_callback=self._choose_folder,
+                                  click_select_callback=self._click_select_image)
 
         # set up the layout of the widgets in the application in the grid
         self.image_pane.grid(row=0, column=0)
@@ -67,6 +70,14 @@ class Application:
         atexit.register(self.save)
         atexit.register(self.current_folder.save)
 
+    def _refresh_all(self):
+        # now, handle the list pane
+        self.list_pane.score_paths = [(image.score, image.path) for image in self.current_folder]
+        self.list_pane.refresh_list_box()
+
+    def _refresh_image(self):
+        pass
+
     def _choose_folder(self):
         # first save the folder you're currently in
         self.current_folder.save()
@@ -76,6 +87,14 @@ class Application:
 
         # re-register the save states
         self._register_save_states()
+
+        # now refresh the whole app
+        self._refresh_all()
+
+    def _click_select_image(self, _):
+        print(f'Selected {_.widget.get(_.widget.curselection()[0])}')
+        
+
 
 
     def save(self):

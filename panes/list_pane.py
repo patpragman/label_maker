@@ -17,7 +17,7 @@ class ListPane(tk.Frame):
                  # the lambda function in here just returns the selected item by default, change this to
                  # something you can use
                  click_select_callback=lambda _: print(f'Selected {_.widget.get(_.widget.curselection()[0])}'),
-                 choose_folder_callback=lambda : print("choose folder button pressed")):
+                 choose_folder_callback=lambda: print("choose folder button pressed")):
         super().__init__(parent)
 
         # click select callback
@@ -45,19 +45,17 @@ class ListPane(tk.Frame):
                                             text="Score Filter:")
         self.selected_filter = tk.StringVar()
         self.selected_filter.trace("w",
-                                   self._refresh_list_box)
+                                   self.refresh_list_box)
         self.select_score_filter = tk.OptionMenu(self._frame,
                                                  self.selected_filter,
                                                  *["None", -1, 0, 1, 2, 3])
 
-        self._refresh_list_box()
+        self.refresh_list_box()
 
-
-    def _refresh_list_box(self, *args):
+    def refresh_list_box(self, *args):
         self._clear_list_box()
 
         score_filter = self.selected_filter.get()
-
 
         self.list_box.insert(tk.END)
 
@@ -107,7 +105,6 @@ class ListPane(tk.Frame):
         self._frame.grid(kwargs, sticky='nsew')
 
 
-
 if __name__ == "__main__":
     # manual test code
     import random
@@ -120,6 +117,5 @@ if __name__ == "__main__":
     print(file_list)
     list_pane = ListPane(root, score_paths=file_list)
     list_pane.grid()
-
 
     root.mainloop()
