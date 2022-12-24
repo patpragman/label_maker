@@ -6,6 +6,10 @@ ALLOWABLE_IMAGE_TYPES = [
     "jpg", "jpeg", "png"
 ]
 
+ALLOWABLE_SCORES = [
+    -1, 0, 1, 2, 3
+]
+
 
 class Folder:
 
@@ -48,10 +52,28 @@ class ScoredImage:
 
     def __init__(self, path_to, score: int = 0):
         self.path = path_to
-        self.score = score
+        self._score = score
+
+    """
+    using properties because I may want to add functionality here later
+    """
+    @property.getter
+    def score(self):
+        return self._score
+
+    @property.setter
+    def score(self, value):
+        if value not in ALLOWABLE_SCORES:
+            msg = """you're trying to set the value of an
+ScoreImage object to something other than one of the 
+allowable scores - that is something other than -1, 0, 2, or 3.
+No other scores are allowable."""
+            raise Exception(msg)
+
+
 
     def __repr__(self):
-        return str((self.path, self.score))
+        return str((self.path, self._score))
 
 
 if __name__ == "__main__":

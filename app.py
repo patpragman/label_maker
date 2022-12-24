@@ -1,14 +1,18 @@
 """
 Application class skeleton for the app
 
-In the application class all the
+In the application class we tie everything together, the data model, the controllers, and the functions
+that tie controllers (like buttons etc) to the data model
 
 """
 
 import tkinter as tk
+
+# controller panels come from here
 from panes.control_pane import ControlPane
 from panes.image_pane import ImagePane
 from panes.list_pane import ListPane
+from data_model.imagescores import Folder, ScoredImage
 
 
 class Application:
