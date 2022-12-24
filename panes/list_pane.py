@@ -61,22 +61,23 @@ class ListPane(tk.Frame):
 
         self.list_box.insert(tk.END)
 
-        for score, path in self.score_paths:
+        if self.score_paths:
+            for score, path in self.score_paths:
 
-            if score_filter == "None" or score_filter == "":
-                score_filter = -2  # dummy variable to avoid even thinking about it
-            else:
-                score_filter = int(score_filter)
+                if score_filter == "None" or score_filter == "":
+                    score_filter = -2  # dummy variable to avoid even thinking about it
+                else:
+                    score_filter = int(score_filter)
 
-            if score == score_filter:
-                continue
+                if score == score_filter:
+                    continue
 
-            file_name = os.path.split(path)[-1]  # get the filename
-            display_string = f"{file_name} - {score}"
+                file_name = os.path.split(path)[-1]  # get the filename
+                display_string = f"{file_name} - {score}"
 
-            # add it to the list
-            self.list_box.insert(tk.END, display_string)
-            self.list_box.itemconfig(tk.END, LIST_BOX_COLOR_MAPPING[score])
+                # add it to the list
+                self.list_box.insert(tk.END, display_string)
+                self.list_box.itemconfig(tk.END, LIST_BOX_COLOR_MAPPING[score])
 
     def _clear_list_box(self):
         self.list_box.delete(0, tk.END)
