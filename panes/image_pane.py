@@ -74,11 +74,11 @@ class ImagePane(tk.Frame):
                 else:
                     # otherwise case 4
                     self.image_path = image_path
-                    self.image_label_variable.set(image_path)
+                    self.image_label_variable.set(image_path.split("/")[-1])
 
         # now load the image
         self._image_object = ImageTk.PhotoImage(
-            Image.open(self.image_path)
+            Image.open(self.image_path).resize((DISPLAY_IMAGE_WIDTH, DISPLAY_IMAGE_HEIGHT))
         )
         self.image_holder.configure(image=self._image_object)
 

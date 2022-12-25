@@ -19,6 +19,7 @@ class Folder:
 
         self._score_file_location = os.path.join(self.path, "scores.json")
 
+
         # if the scores file already exists, load it!
         if os.path.exists(self._score_file_location):
             with open(self._score_file_location, "r") as state_file:
@@ -28,7 +29,9 @@ class Folder:
         else:
             self.images = [ScoredImage(os.path.join(self.path, path_to_image)) for path_to_image in os.listdir(self.path) \
                            if path_to_image.split('.')[-1].lower() in ALLOWABLE_IMAGE_TYPES ]
-            print(self.images)
+
+        self.current_image = self.images[0] if self.images else None
+
 
     def save(self):
 
@@ -53,7 +56,7 @@ class Folder:
 
 class ScoredImage:
 
-    def __init__(self, path_to, score: int = 0):
+    def __init__(self, path_to, score: int = -1):
         self.path = path_to
         self._score = score
 
@@ -75,9 +78,18 @@ No other scores are allowable."""
         else:
             self._score = value
 
+    def force_score(self, value):
+        self.score = value
+
 
     def __repr__(self):
         return str((self.path, self._score))
+
+    def __str__(self):
+        return self.path
+
+    def __eq__(self, other):
+        return self.path == other.path
 
 
 if __name__ == "__main__":

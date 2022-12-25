@@ -46,8 +46,18 @@ class Application:
         self.root.resizable(False, False)
 
         # set up the sub panes
+
+        # image sub-pane
         self.image_pane = ImagePane(self.root)
-        self.control_pane = ControlPane(self.root)
+
+        self.control_pane = ControlPane(self.root,
+                                        zero_button_callback=lambda: self._set_current_image_score(0),
+                                        one_button_callback=lambda: self._set_current_image_score(1),
+                                        two_button_callback=lambda: self._set_current_image_score(2),
+                                        three_button_callback=lambda: self._set_current_image_score(3),
+                                        mark_uncertain_button_callback=lambda: self._set_current_image_score(-1),
+                                        )
+
         self.list_pane = ListPane(self.root,
                                   score_paths=[(image.score, image.path) for image in self.current_folder],
                                   choose_folder_callback=self._choose_folder,
@@ -58,8 +68,12 @@ class Application:
         self.control_pane.grid(row=1, column=0)
         self.list_pane.grid(row=0, column=1)
 
-        # we need to register these states so they save when you close out of the program
+        # we need to register these states, so they save when you close out of the program
         self._register_save_states()
+
+    def _set_current_image_score(self, score):
+        self.current_folder.current_image.score = score
+        self._refresh_all()
 
     def _register_save_states(self):
         # unregister previous state
@@ -74,9 +88,7 @@ class Application:
         # now, handle the list pane
         self.list_pane.score_paths = [(image.score, image.path) for image in self.current_folder]
         self.list_pane.refresh_list_box()
-
-    def _refresh_image(self):
-        pass
+        self._refresh_image()
 
     def _choose_folder(self):
         # first save the folder you're currently in
@@ -91,11 +103,16 @@ class Application:
         # now refresh the whole app
         self._refresh_all()
 
+    def _refresh_image(self):
+        self.image_pane.change_image(str(self.current_folder.current_image))
+
     def _click_select_image(self, _):
-        print(f'Selected {_.widget.get(_.widget.curselection()[0])}')
-        
+        short_path = _.widget.get(_.widget.curselection()[0]).split(" - ")[0]
+        full_path = path.join(self.current_folder.path, short_path)
 
-
+        images = [image for image in self.current_folder if image.path == full_path]
+        self.current_folder.current_image = images[0] if images else None
+        self._refresh_all()
 
     def save(self):
         # open up the save state file, and save the current state
