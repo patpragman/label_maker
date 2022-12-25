@@ -71,6 +71,8 @@ class Application:
         # we need to register these states, so they save when you close out of the program
         self._register_save_states()
 
+        self._refresh_all()
+
     def _set_current_image_score(self, score):
         self.current_folder.current_image.score = score
         self._refresh_all()

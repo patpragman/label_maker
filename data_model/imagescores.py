@@ -19,25 +19,31 @@ class Folder:
 
         self._score_file_location = os.path.join(self.path, "scores.json")
 
-
         # if the scores file already exists, load it!
         if os.path.exists(self._score_file_location):
             with open(self._score_file_location, "r") as state_file:
 
-                self.images = [ScoredImage(o['path'], o['score']) for o in json.load(state_file)]
+                json_dict = json.load(state_file)
+
+                self.images = [ScoredImage(o['path'], o['score']) for o in json_dict['images']]
+                path = json_dict['last_image']
+
+                images = [image for image in self.images if image.path == path]
+                self.current_image = images[0] if images else None
 
         else:
-            self.images = [ScoredImage(os.path.join(self.path, path_to_image)) for path_to_image in os.listdir(self.path) \
-                           if path_to_image.split('.')[-1].lower() in ALLOWABLE_IMAGE_TYPES ]
+            self.images = [ScoredImage(os.path.join(self.path, path_to_image)) for path_to_image in
+                           os.listdir(self.path) \
+                           if path_to_image.split('.')[-1].lower() in ALLOWABLE_IMAGE_TYPES]
 
-        self.current_image = self.images[0] if self.images else None
-
+            self.current_image = self.images[0] if self.images else None
 
     def save(self):
 
         with open(self._score_file_location, "w") as state_file:
-            simple_objects = [{"path": o.path,
-                               "score": o.score} for o in self.images]
+            simple_objects = {"images": [{"path": o.path,
+                                          "score": o.score} for o in self.images],
+                              "last_image": self.current_image.path if isinstance(self.current_image, ScoredImage) else None}
             state_file.write(json.dumps(simple_objects))
 
     def __repr__(self):
@@ -63,6 +69,7 @@ class ScoredImage:
     """
     using properties because I may want to add functionality here later
     """
+
     @property
     def score(self):
         return self._score
@@ -81,7 +88,6 @@ No other scores are allowable."""
     def force_score(self, value):
         self.score = value
 
-
     def __repr__(self):
         return str((self.path, self._score))
 
@@ -97,6 +103,5 @@ if __name__ == "__main__":
     print(folder)
     for o in folder:
         o.score += 1
-
 
     folder.save()
