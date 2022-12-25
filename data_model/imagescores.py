@@ -53,7 +53,8 @@ class Folder:
         return self.path
 
     def __iter__(self):
-        # iterator to make the class able to be able to be used in loops etc.
+        # iterator to make the class able to be able to be used in loops etc.  They should always be sorted.
+        self.images.sort()
         i = 0
         while i < len(self.images):
             yield self.images[i]
@@ -96,6 +97,9 @@ No other scores are allowable."""
 
     def __eq__(self, other):
         return self.path == other.path
+
+    def __lt__(self, other):
+        return self.path < other.path
 
 
 if __name__ == "__main__":

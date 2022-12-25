@@ -34,7 +34,6 @@ class ImagePane(tk.Frame):
     def change_image(self, image_path):
         # in this function, we need to load the image object, or if it's not available display an error message
 
-
         """
         we have 4 cases here:
             case 1:
@@ -59,12 +58,12 @@ class ImagePane(tk.Frame):
         # handle case 1
         if not image_path:
             self.image_label_variable.set('no image folder currently loaded')
-            self.image_path = os.path.join(WORKING_DIR,"images/load_an_image.png")
+            self.image_path = os.path.join(WORKING_DIR, "images/load_an_image.png")
         else:
             # handle case 2
             if not os.path.exists(image_path):
                 self.image_label_variable.set(f"path: {image_path} is a bad path, try something else")
-                self.image_path = os.path.join(WORKING_DIR,"images/bad_path.png")
+                self.image_path = os.path.join(WORKING_DIR, "images/bad_path.png")
             else:
                 # handle case 3
                 if not image_path.lower().endswith(('.png', '.jpg', '.jpeg')):
@@ -81,7 +80,6 @@ class ImagePane(tk.Frame):
             Image.open(self.image_path).resize((DISPLAY_IMAGE_WIDTH, DISPLAY_IMAGE_HEIGHT))
         )
         self.image_holder.configure(image=self._image_object)
-
 
     def grid(self, **kwargs):
         self.image_label.grid(row=0)
