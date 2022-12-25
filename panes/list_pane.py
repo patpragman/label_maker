@@ -34,7 +34,11 @@ class ListPane(tk.Frame):
 
         # list box configuration
         self._list_box_frame = tk.Frame()
-        self.list_box = tk.Listbox(self._frame, height=24)
+        self.list_box = tk.Listbox(self._frame,
+                                   height=24,
+                                   selectmode=tk.SINGLE,
+                                   selectforeground="Black",
+                                   activestyle="none")
         self.list_box.bind("<<ListboxSelect>>", self.click_select_callback)
 
         # select folders, or filters

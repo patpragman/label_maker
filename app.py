@@ -62,6 +62,29 @@ class Application:
                                   score_paths=[(image.score, image.path) for image in self.current_folder],
                                   choose_folder_callback=self._choose_folder,
                                   click_select_callback=self._click_select_image)
+        self._selected_index = self.list_pane.list_box.selection_set(first=0)
+
+        """
+        Now let's set up the required keyboard commands, this could be abstracted, but it's less clear
+        if I do that.       
+        """
+
+        # bind the numpad
+        self.root.bind('<KP_0>', lambda _: self._set_current_image_score(0))
+        self.root.bind('<KP_1>', lambda _: self._set_current_image_score(1))
+        self.root.bind('<KP_2>', lambda _: self._set_current_image_score(2))
+        self.root.bind("<KP_3>", lambda _: self._set_current_image_score(3))
+
+        # numbers
+        self.root.bind('0', lambda _: self._set_current_image_score(0))
+        self.root.bind('1', lambda _: self._set_current_image_score(1))
+        self.root.bind('2', lambda _: self._set_current_image_score(2))
+        self.root.bind("3", lambda _: self._set_current_image_score(3))
+
+        # left right arrow keys
+        self.root.bind('<Left>', lambda _: self._prev_image())
+        self.root.bind('<Right>', lambda _: self._next_image())
+
 
         # set up the layout of the widgets in the application in the grid
         self.image_pane.grid(row=0, column=0)
@@ -72,6 +95,15 @@ class Application:
         self._register_save_states()
 
         self._refresh_all()
+
+    def _next_image(self):
+        self._selected_index += 1
+        self._refresh_all()
+
+    def _prev_image(self):
+        self._selected_index -= 1
+        self._refresh_all()
+
 
     def _set_current_image_score(self, score):
         self.current_folder.current_image.score = score
@@ -109,6 +141,8 @@ class Application:
         self.image_pane.change_image(str(self.current_folder.current_image))
 
     def _click_select_image(self, _):
+
+
         short_path = _.widget.get(_.widget.curselection()[0]).split(" - ")[0]
         full_path = path.join(self.current_folder.path, short_path)
 
