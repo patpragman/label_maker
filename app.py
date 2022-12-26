@@ -9,6 +9,8 @@ that tie controllers (like buttons etc) to the data model
 import atexit
 import tkinter as tk
 
+from operator import add, sub
+
 from json import load, dump
 
 from os import getcwd, path
@@ -62,7 +64,7 @@ class Application:
                                   score_paths=[(image.score, image.path) for image in self.current_folder],
                                   choose_folder_callback=self._choose_folder,
                                   click_select_callback=self._click_select_image)
-        self._selected_index = self.list_pane.list_box.selection_set(first=0)
+        self._selected_index = 0
 
         """
         Now let's set up the required keyboard commands, this could be abstracted, but it's less clear
@@ -82,8 +84,8 @@ class Application:
         self.root.bind("3", lambda _: self._set_current_image_score(3))
 
         # left right arrow keys
-        self.root.bind('<Left>', lambda _: self._prev_image())
-        self.root.bind('<Right>', lambda _: self._next_image())
+        self.root.bind('<Left>', lambda _: self._move(sub))
+        self.root.bind('<Right>', lambda _: self._move(add))
 
 
         # set up the layout of the widgets in the application in the grid
@@ -96,17 +98,23 @@ class Application:
 
         self._refresh_all()
 
-    def _next_image(self):
-        self._selected_index += 1
-        self._refresh_all()
+    def _move(self, f):
+        self._selected_index = f(self._selected_index, 1)
 
-    def _prev_image(self):
-        self._selected_index -= 1
-        self._refresh_all()
+        if self.list_pane.list_box.size() == 0:
+            return None
 
+        if self._selected_index >= self.list_pane.list_box.size():
+            self._selected_index = 0
+        elif self._selected_index < 0:
+            self._selected_index = self.list_pane.list_box.size() - 1
+
+
+        self._refresh_all()
 
     def _set_current_image_score(self, score):
         self.current_folder.current_image.score = score
+        self._move(add)
         self._refresh_all()
 
     def _register_save_states(self):
@@ -138,16 +146,18 @@ class Application:
         self._refresh_all()
 
     def _refresh_image(self):
-        self.image_pane.change_image(str(self.current_folder.current_image))
 
-    def _click_select_image(self, _):
-
-
-        short_path = _.widget.get(_.widget.curselection()[0]).split(" - ")[0]
+        short_path = self.list_pane.list_box.get(first=self._selected_index).split(" - ")[0]
         full_path = path.join(self.current_folder.path, short_path)
 
         images = [image for image in self.current_folder if image.path == full_path]
         self.current_folder.current_image = images[0] if images else None
+
+        self.image_pane.change_image(str(self.current_folder.current_image))
+
+    def _click_select_image(self, _):
+
+        self._selected_index = _.widget.curselection()[0]
         self._refresh_all()
 
     def save(self):
