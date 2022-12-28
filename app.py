@@ -22,6 +22,7 @@ from panes.list_pane import ListPane
 from data_model.imagescores import Folder, ScoredImage
 
 from tkinter import filedialog
+from tkinter import messagebox
 
 
 class Application:
@@ -129,7 +130,13 @@ class Application:
     def _refresh_all(self):
         # now, handle the list pane
         self.list_pane.score_paths = [(image.score, image.path) for image in self.current_folder]
+
+        # raise a warning when all images checked
+        if all(image.score != -1 for image in self.current_folder):
+            messagebox.showinfo("showwarning", "all files checked")
+
         self.list_pane.refresh_list_box()
+        self.list_pane.list_box.select_set(self._selected_index)
         self._refresh_image()
 
     def _choose_folder(self):
@@ -137,7 +144,8 @@ class Application:
         self.current_folder.save()
 
         # now choose a new folder
-        self.current_folder = Folder(filedialog.askdirectory(title="choose the directory you want to explore"))
+        self.current_folder = Folder(filedialog.askdirectory(title="choose the directory you want to explore",
+                                                             initialdir=self.current_folder))
 
         # re-register the save states
         self._register_save_states()
